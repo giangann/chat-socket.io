@@ -1,14 +1,24 @@
 const express = require("express");
-const app = express();
 const socket = require("socket.io");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const userRouter = require("./routers/userRouter");
+const cookieParser = require("cookie-parser");
 
 require("dotenv").config();
 
-app.use(cors());
+const app = express();
+app.use(
+  cors(
+    //  if don't have 2 line below, credentials: "include" attributes in fetch in front-end will got cors error
+    {
+      origin: "http://localhost:3000",
+      credentials: true,
+    }
+  )
+);
 app.use(express.json());
+// app.use(cookieParser());
 
 mongoose
   .connect(process.env.MONGO_URL, {
@@ -34,8 +44,8 @@ const server = app.listen(process.env.PORT, () => {
 
 const io = socket(server, {
   cors: {
-    origin: "http://localhost:3000",
-    cridentals: true,
+    origin: ["http://localhost:3000"],
+    credentials: true,
   },
 });
 
