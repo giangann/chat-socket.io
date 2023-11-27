@@ -33,7 +33,9 @@ mongoose
   });
 
 app.get("/", (req, res) => {
-  res.send("<h1>Hello world</h1>");
+  res.send(
+    "<div> <iframe src='http://localhost:3000' width='500px' height='500px'></iframe><h1>Hello world</h1></div>"
+  );
 });
 
 app.use("/api/user", userRouter);
