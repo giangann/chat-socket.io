@@ -1,12 +1,14 @@
 import { useState } from "react";
+import { RouterProvider } from "react-router-dom";
 import "./App.css";
-import { ChatRoom } from "./ChatRoom";
-import { Login } from "./Login";
+import { route } from "./Route";
+
+//check login status, navigate user
 function App() {
-  const [isLogin, setIsLogin] = useState(false);
   return (
     <div className="App">
-      {isLogin ? <ChatRoom /> : <Login onLogin={() => setIsLogin(true)} />}
+      {/* {isLogin ? <ChatRoom /> : <Login onLogin={() => setIsLogin(true)} />} */}
+      <RouterProvider router={route} />
     </div>
   );
 }

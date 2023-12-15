@@ -1,18 +1,19 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-export const Login = ({ onLogin }) => {
+export const Signup = () => {
   const usernameRef = useRef(null);
   const passwordRef = useRef(null);
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = async (event) => {
+  const handleSignUp = async (event) => {
+    setErrorMessage("");
     event.preventDefault();
     const username = usernameRef.current.value;
     const password = passwordRef.current.value;
     const data = { username, password };
 
-    const respond = await fetch("http://localhost:5000/api/user/login", {
+    const respond = await fetch("http://localhost:5000/api/user/new-user", {
       method: "POST", // or 'PUT'
       headers: {
         "Content-Type": "application/json",
@@ -23,16 +24,18 @@ export const Login = ({ onLogin }) => {
 
     const result = await respond.json();
 
-    if (result.status === true) {
-      navigate("/");
+    if (result.status === false) {
+      setErrorMessage(result.error);
+      return;
     }
+
+    navigate("/");
   };
 
   return (
     <div>
-      <h1>LOGIN</h1>
-
-      <form onSubmit={handleSubmit}>
+      <h1>SIGN UP</h1>
+      <form onSubmit={handleSignUp}>
         <label>
           Username:
           <input type="text" ref={usernameRef} />
@@ -45,8 +48,9 @@ export const Login = ({ onLogin }) => {
         <br />
         <button type="submit">Submit</button>
       </form>
+      <p style={{ color: "red" }}>{errorMessage}</p>
 
-      <a href="/signup">Create new account</a>
+      <a href="/login">have account? login</a>
     </div>
   );
 };

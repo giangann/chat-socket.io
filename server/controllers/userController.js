@@ -43,3 +43,31 @@ module.exports.createUser = async (req, res, next) => {
   });
   res.status(201).json({ username, password });
 };
+
+module.exports.login = async (req, res, next) => {
+  const { username, password } = req.body;
+
+  const user = await User.findOne({ username: username }).exec();
+
+  if (!user) {
+    return res.status(500).json({ error: "no user found", status: false });
+  } else {
+    const comparedPassword = await bcrypt.compare(password, user.password);
+    if (!comparedPassword) {
+      return res.status(500).json({ error: "wrong password", status: false });
+    }
+
+    const token = createToken(user._id);
+    res.cookie("jwt", token, {
+      withCredentials: true,
+      httpOnly: false,
+      maxAge: maxAge * 1000,
+    });
+    res.status(200).json({ username, status: true });
+  }
+};
+
+
+module.exports.logout = async (req, res, next) => {
+  
+};

@@ -1,15 +1,25 @@
 import { useEffect, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
 export const ChatRoom = () => {
   const [messages, setMessages] = useState(messagesTest);
   const socket = useRef(null);
   const inputRef = useRef(null);
+  const navigate = useNavigate();
+  const {
+    state: { user },
+  } = useLocation();
   const handleSend = () => {
     const messageText = inputRef.current.value;
     inputRef.current.value = "";
 
     setMessages([...messages, { text: messageText, type: "send" }]);
     socket.current.emit("send-msg", messageText);
+  };
+
+  const handleLogout = async () => {
+    document.cookie= "jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    navigate("/");
   };
 
   useEffect(() => {
@@ -27,6 +37,10 @@ export const ChatRoom = () => {
 
   return (
     <div className="App">
+      <div style={{ marginBottom: 60, marginTop: 20 }}>
+        <p>hello {user.username}</p>
+        <button onClick={handleLogout}>Logout</button>
+      </div>
       <input ref={inputRef} />
       <button onClick={handleSend}>send</button>
       <div
