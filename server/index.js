@@ -18,7 +18,7 @@ app.use(
   )
 );
 app.use(express.json());
-// app.use(cookieParser());
+app.use(cookieParser());
 
 mongoose
   .connect(process.env.MONGO_URL, {
