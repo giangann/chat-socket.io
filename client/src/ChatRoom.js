@@ -9,18 +9,58 @@ export const ChatRoom = () => {
   const {
     state: { user },
   } = useLocation();
-  const handleSend = () => {
-    const messageText = inputRef.current.value;
+  const handleSend = async () => {
+    const newMessage = {
+      from_user_id: user._id,
+      to_user_id: "657e8fc34b24f63b2b877d22",
+      text: inputRef.current.value,
+    };
     inputRef.current.value = "";
 
-    setMessages([...messages, { text: messageText, type: "send" }]);
-    socket.current.emit("send-msg", messageText);
+    // const respond = await fetch(
+    //   "http://localhost:5000/api/message/save-message",
+    //   {
+    //     method: "POST",
+    //     body: JSON.stringify(newMessage),
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //   }
+    // );
+    // const result = await respond.json()
+    // console.log(result)
+
+    setMessages([...messages, { text: newMessage.text, type: "send" }]);
+    socket.current.emit("send-msg", newMessage);
   };
 
   const handleLogout = async () => {
-    document.cookie= "jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie = "jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     navigate("/");
   };
+
+  useEffect(() => {
+    const getListMsgOfUser = async () => {
+      const searchParams = {
+        from_user_id: user._id,
+        to_user_id: "657e8fc34b24f63b2b877d22",
+      };
+      const respond = await fetch(
+        "http://localhost:5000/api/message/get-message?" +
+          new URLSearchParams(searchParams),
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const result = await respond.json();
+      console.log(result);
+    };
+
+    getListMsgOfUser();
+  }, []);
 
   useEffect(() => {
     socket.current = io("http://localhost:5000");

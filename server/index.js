@@ -3,7 +3,9 @@ const socket = require("socket.io");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const userRouter = require("./routers/userRouter");
+const messageRouter = require("./routers/messageRouter");
 const cookieParser = require("cookie-parser");
+const { saveUserMessages } = require("./controllers/messageController");
 
 require("dotenv").config();
 
@@ -39,6 +41,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/user", userRouter);
+app.use("/api/message", messageRouter);
 
 const server = app.listen(process.env.PORT, () => {
   console.log(`Server started on ${process.env.PORT}`);
@@ -54,8 +57,9 @@ const io = socket(server, {
 io.on("connection", (socket) => {
   console.log("have someone connect!");
   socket.broadcast.emit("new-user", "new user join our chat");
-  socket.on("send-msg", (message) => {
+  socket.on("send-msg", async (message) => {
     console.log(message);
-    socket.broadcast.emit("reply-msg", message);
+    await saveUserMessages(message)
+    socket.broadcast.emit("reply-msg", message.text);
   });
 });
