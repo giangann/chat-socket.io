@@ -17,19 +17,6 @@ export const ChatRoom = () => {
     };
     inputRef.current.value = "";
 
-    // const respond = await fetch(
-    //   "http://localhost:5000/api/message/save-message",
-    //   {
-    //     method: "POST",
-    //     body: JSON.stringify(newMessage),
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //   }
-    // );
-    // const result = await respond.json()
-    // console.log(result)
-
     setMessages([...messages, { text: newMessage.text, type: "send" }]);
     socket.current.emit("send-msg", newMessage);
   };
@@ -61,6 +48,29 @@ export const ChatRoom = () => {
 
     getListMsgOfUser();
   }, []);
+
+  useEffect(() => {
+    const getListUsers = async () => {
+      const searchParams = {
+        my_user_id: user._id,
+      };
+      const respond = await fetch(
+        "http://localhost:5000/api/user/get-user-not-me?" +
+          new URLSearchParams(searchParams),
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const result = await respond.json();
+      console.log(result);
+    };
+
+    getListUsers();
+  }, []);
+
 
   useEffect(() => {
     socket.current = io("http://localhost:5000");

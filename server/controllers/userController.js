@@ -9,10 +9,12 @@ const createToken = (id) => {
   });
 };
 
-module.exports.getUser = (req, res, next) => {
-  const user = { name: "an", age: 20 };
+module.exports.getAllUserEscapeMe = async (req, res, next) => {
+  const { my_user_id } = req.query;
 
-  return res.json(user);
+  const listUsers = await User.find({ _id: { $ne: my_user_id } }).exec();
+
+  return res.json(listUsers);
 };
 
 module.exports.createUser = async (req, res, next) => {
@@ -67,7 +69,4 @@ module.exports.login = async (req, res, next) => {
   }
 };
 
-
-module.exports.logout = async (req, res, next) => {
-  
-};
+module.exports.logout = async (req, res, next) => {};

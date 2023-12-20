@@ -1,9 +1,13 @@
 const route = require("express").Router();
-const { getUser, createUser, login } = require("../controllers/userController");
+const {
+  createUser,
+  login,
+  getAllUserEscapeMe,
+} = require("../controllers/userController");
 const { checkUserByToken } = require("../middlewares/userMiddleware");
 
 route.post("/", checkUserByToken);
-route.post("/get-user", getUser);
+route.get("/get-user-not-me", getAllUserEscapeMe);
 route.post("/new-user", createUser);
 route.post("/login", login);
 
