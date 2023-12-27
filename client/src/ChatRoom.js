@@ -1,23 +1,17 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useAtom } from "jotai";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { ChatBox } from "./ChatBox";
 import { ListUsers } from "./ListUsers";
-import { useEffect, useState } from "react";
+import { userAtom } from "./atom/userAtom";
 export const ChatRoom = () => {
-  const [listUsers, setListUsers] = useState([]);
-  const {
-    state: { user },
-  } = useLocation();
+  const navigate = useNavigate();
+  const [user, setUserAtom] = useAtom(userAtom);
   const handleLogout = async () => {
     document.cookie = "jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    setUserAtom(null);
     navigate("/");
   };
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const fetchListUsers = async () => {
-      const respond = fetch("");
-    };
-  }, []);
 
   return (
     <div className="App">
@@ -39,4 +33,4 @@ export const ChatRoom = () => {
   );
 };
 
-export const height = '500px';
+export const height = "500px";

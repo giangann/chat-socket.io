@@ -3,9 +3,23 @@ import { Login } from "./Login";
 import { Layout } from "./Layout";
 import { Signup } from "./Signup";
 import { ChatRoom } from "./ChatRoom";
+import { ProtectedRoute } from "./ProtectedRoute";
 
 const routeArr = [
-  { path: "/", element: <Layout /> },
+  {
+    path: "/",
+    element: (
+      <ProtectedRoute>
+        <Layout />
+      </ProtectedRoute>
+    ),
+    children: [
+      {
+        path: "/chat",
+        element: <ChatRoom />,
+      },
+    ],
+  },
   {
     path: "/login",
     element: <Login />,
@@ -13,10 +27,6 @@ const routeArr = [
   {
     path: "/signup",
     element: <Signup />,
-  },
-  {
-    path: "/chat",
-    element: <ChatRoom />,
   },
 ];
 export const route = createBrowserRouter(routeArr);

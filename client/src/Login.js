@@ -1,31 +1,18 @@
 import React, { useRef } from "react";
+import { useAuth } from "./hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 
-export const Login = ({ onLogin }) => {
+export const Login = () => {
   const usernameRef = useRef(null);
   const passwordRef = useRef(null);
+  const { login } = useAuth();
   const navigate = useNavigate();
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     const username = usernameRef.current.value;
     const password = passwordRef.current.value;
-    const data = { username, password };
-
-    const respond = await fetch("http://localhost:5000/api/user/login", {
-      method: "POST", // or 'PUT'
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-      credentials: "include", // if don't have this, token can't be set to cookies
-    });
-
-    const result = await respond.json();
-
-    if (result.status === true) {
-      navigate("/");
-    }
+    await login(username, password);
+    navigate("/chat");
   };
 
   return (
