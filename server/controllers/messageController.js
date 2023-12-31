@@ -18,8 +18,16 @@ module.exports.getUserMessages = async (req, res, next) => {
   const { from_user_id, to_user_id } = req.query;
 
   const listMessages = await Message.find({
-    from: from_user_id,
-    to: to_user_id,
+    $or: [
+      {
+        from: from_user_id,
+        to: to_user_id,
+      },
+      {
+        from: to_user_id,
+        to: from_user_id,
+      },
+    ],
   }).exec();
 
   return res.status(200).send(JSON.stringify(listMessages));

@@ -3,14 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
 import { height } from "./ChatRoom";
 
-export const ChatBox = ({ me: user }) => {
+export const ChatBox = ({ me: user, toUser }) => {
   const [messages, setMessages] = useState(messagesTest);
   const socket = useRef(null);
   const inputRef = useRef(null);
   const handleSend = async () => {
     const newMessage = {
       from_user_id: user._id,
-      to_user_id: "657e8fc34b24f63b2b877d22",
+      to_user_id: toUser,
       text: inputRef.current.value,
     };
     inputRef.current.value = "";
@@ -23,7 +23,7 @@ export const ChatBox = ({ me: user }) => {
     const getListMsgOfUser = async () => {
       const searchParams = {
         from_user_id: user._id,
-        to_user_id: "657e8fc34b24f63b2b877d22",
+        to_user_id: toUser,
       };
       const respond = await fetch(
         "http://localhost:5000/api/message/get-message?" +
@@ -37,32 +37,19 @@ export const ChatBox = ({ me: user }) => {
       );
       const result = await respond.json();
       console.log(result);
+
+      setMessages(
+        result.map((message) => {
+          return {
+            ...message,
+            type: message.from === user._id ? "send" : "received",
+          };
+        })
+      );
     };
 
     getListMsgOfUser();
-  }, []);
-
-  useEffect(() => {
-    const getListUsers = async () => {
-      const searchParams = {
-        my_user_id: user._id,
-      };
-      const respond = await fetch(
-        "http://localhost:5000/api/user/get-user-not-me?" +
-          new URLSearchParams(searchParams),
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      const result = await respond.json();
-      console.log(result);
-    };
-
-    getListUsers();
-  }, []);
+  }, [toUser]);
 
   useEffect(() => {
     socket.current = io("http://localhost:5000");
@@ -78,7 +65,7 @@ export const ChatBox = ({ me: user }) => {
   }, [socket, messages]);
 
   return (
-    <div style={{ width: "50vw", height: height, overflowY:'auto' }}>
+    <div style={{ width: "50vw", height: height, overflowY: "auto" }}>
       <input ref={inputRef} />
       <button onClick={handleSend}>send</button>
       <div

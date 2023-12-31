@@ -1,16 +1,22 @@
 import { useAtom } from "jotai";
-import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChatBox } from "./ChatBox";
 import { ListUsers } from "./ListUsers";
 import { userAtom } from "./atom/userAtom";
+import { useAuth } from "./hooks/useAuth";
+import { useState } from "react";
 export const ChatRoom = () => {
   const navigate = useNavigate();
-  const [user, setUserAtom] = useAtom(userAtom);
+  const { logout } = useAuth();
+  const [user] = useAtom(userAtom);
+  const [toUser, setToUser] = useState(-1)
+
+  const handleChooseUser = (id) =>{
+    setToUser(id)
+  }
   const handleLogout = async () => {
-    document.cookie = "jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    setUserAtom(null);
-    navigate("/");
+    await logout();
+    navigate("/login");
   };
 
   return (
@@ -23,10 +29,10 @@ export const ChatRoom = () => {
       <div style={{ margin: "auto" }}>
         <div style={{ display: "flex" }}>
           {/* list users */}
-          <ListUsers />
+          <ListUsers toUser={toUser} handleChooseUser={handleChooseUser}/>
 
           {/* chat box */}
-          <ChatBox me={user} />
+          <ChatBox me={user} toUser = {toUser} />
         </div>
       </div>
     </div>

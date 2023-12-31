@@ -12,7 +12,7 @@ const createToken = (id) => {
 module.exports.getAllUserEscapeMe = async (req, res, next) => {
   const { my_user_id } = req.query;
 
-  const listUsers = await User.find({ _id: { $ne: my_user_id } }).exec();
+  const listUsers = (await User.find({ _id: { $ne: my_user_id } }).exec()).reverse();
 
   return res.json(listUsers);
 };

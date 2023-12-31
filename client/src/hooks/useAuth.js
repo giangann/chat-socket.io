@@ -1,11 +1,9 @@
-import { useAtom, useSetAtom } from "jotai";
-import { Navigate } from "react-router-dom";
+import { useAtom } from "jotai";
+import { useCallback } from "react";
 import { userAtom } from "../atom/userAtom";
-import { useCallback, useState } from "react";
 
 export const useAuth = () => {
-  const [user] = useAtom(userAtom);
-  const setUserAtom = useSetAtom(userAtom);
+  const [user, setUserAtom] = useAtom(userAtom);
 
   const checkUser = useCallback(async () => {
     const response = await fetch("http://localhost:5000/api/user", {
@@ -39,9 +37,15 @@ export const useAuth = () => {
       setUserAtom(result.user);
     }
   };
+
+  const logout = async ()=>{
+    document.cookie = "jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    setUserAtom(null)
+  }
   return {
     user,
     checkUser,
     login,
+    logout
   };
 };
