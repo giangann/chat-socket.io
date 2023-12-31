@@ -1,7 +1,4 @@
-import { useAtom } from "jotai";
-import { useEffect, useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
-import { userAtom } from "./atom/userAtom";
+import { Outlet } from "react-router-dom";
 
 export const Layout = () => {
   return <Outlet />;

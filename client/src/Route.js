@@ -15,6 +15,7 @@ const routeArr = [
     ),
     children: [
       {
+        index: true,
         path: "/chat",
         element: <ChatRoom />,
       },

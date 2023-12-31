@@ -8,7 +8,6 @@ function App() {
   const { checkUser } = useAuth();
   const [loading, setLoading] = useState(true);
   useEffect(() => {
-    console.log("use effect call");
     const fetchUser = async () => {
       await checkUser();
       setLoading(false)

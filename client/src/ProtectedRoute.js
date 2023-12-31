@@ -5,8 +5,6 @@ export const ProtectedRoute = ({ children }) => {
   // call useAuth() => check local state if user status is authenticated
   const { user } = useAuth();
 
-  console.log(user);
-
   // return children if auth status is true
   if (user) {
     return children;

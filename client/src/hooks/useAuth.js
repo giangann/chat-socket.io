@@ -1,18 +1,13 @@
 import { useAtom } from "jotai";
 import { useCallback } from "react";
 import { userAtom } from "../atom/userAtom";
+import { postApi } from "../ultils/request/request";
 
 export const useAuth = () => {
   const [user, setUserAtom] = useAtom(userAtom);
 
   const checkUser = useCallback(async () => {
-    const response = await fetch("http://localhost:5000/api/user", {
-      credentials: "include",
-      method: "POST",
-    });
-
-    const user = await response.json();
-    console.log(user);
+    const user = await postApi('api/user')
     const isLogined = user.status;
     if (isLogined) {
       setUserAtom(user.user);
@@ -21,31 +16,20 @@ export const useAuth = () => {
 
   const login = async (username, password) => {
     const data = { username, password };
-    const respond = await fetch("http://localhost:5000/api/user/login", {
-      method: "POST", // or 'PUT'
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-      credentials: "include", // if don't have this, token can't be set to cookies
-    });
-
-    const result = await respond.json();
-
+    const result = await postApi("api/user/login", data);
     if (result.status === true) {
-      console.log(result);
       setUserAtom(result.user);
     }
   };
 
-  const logout = async ()=>{
+  const logout = async () => {
     document.cookie = "jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    setUserAtom(null)
-  }
+    setUserAtom(null);
+  };
   return {
     user,
     checkUser,
     login,
-    logout
+    logout,
   };
 };

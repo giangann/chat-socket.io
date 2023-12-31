@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
 import { height } from "./ChatRoom";
+import { getApi } from "./ultils/request/request";
 
 export const ChatBox = ({ me: user, toUser }) => {
   const [messages, setMessages] = useState(messagesTest);
@@ -25,18 +25,7 @@ export const ChatBox = ({ me: user, toUser }) => {
         from_user_id: user._id,
         to_user_id: toUser,
       };
-      const respond = await fetch(
-        "http://localhost:5000/api/message/get-message?" +
-          new URLSearchParams(searchParams),
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      const result = await respond.json();
-      console.log(result);
+      const result = await getApi("api/message/get-message", searchParams);
 
       setMessages(
         result.map((message) => {

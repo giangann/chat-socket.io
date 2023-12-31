@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { height } from "./ChatRoom";
 import { useAuth } from "./hooks/useAuth";
+import { getApi, postApi } from "./ultils/request/request";
 
 export const ListUsers = ({ toUser, handleChooseUser }) => {
   const [listUser, setListUser] = useState([]);
@@ -10,18 +11,8 @@ export const ListUsers = ({ toUser, handleChooseUser }) => {
       const searchParams = {
         my_user_id: user._id,
       };
-      const respond = await fetch(
-        "http://localhost:5000/api/user/get-user-not-me?" +
-          new URLSearchParams(searchParams),
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      const result = await respond.json();
-      console.log(result);
+
+      const result = await getApi("api/user/get-user-not-me", searchParams);
       setListUser(result);
     };
 
