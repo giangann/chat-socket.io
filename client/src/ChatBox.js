@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
 import { height } from "./ChatRoom";
 import { getApi } from "./ultils/request/request";
+import { baseUrl } from "./constants/constant";
 
 export const ChatBox = ({ me: user, toUser }) => {
   const [messages, setMessages] = useState(messagesTest);
@@ -41,7 +42,8 @@ export const ChatBox = ({ me: user, toUser }) => {
   }, [toUser]);
 
   useEffect(() => {
-    socket.current = io("http://localhost:5000");
+    socket.current = io(baseUrl).emit("parse-user", { user_id: user._id });
+    console.log(socket.current);
   }, []);
 
   useEffect(() => {

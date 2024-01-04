@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { height } from "./ChatRoom";
 import { useAuth } from "./hooks/useAuth";
-import { getApi, postApi } from "./ultils/request/request";
+import { getApi } from "./ultils/request/request";
 
 export const ListUsers = ({ toUser, handleChooseUser }) => {
   const [listUser, setListUser] = useState([]);

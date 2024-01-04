@@ -58,8 +58,19 @@ io.on("connection", (socket) => {
   console.log("have someone connect!");
   socket.broadcast.emit("new-user", "new user join our chat");
   socket.on("send-msg", async (message) => {
-    console.log(message);
-    await saveUserMessages(message)
-    socket.broadcast.emit("reply-msg", message.text);
+    await saveUserMessages(message);
+    const targetSocket = await getSocketByUserId(message.to_user_id)
+    targetSocket.emit("reply-msg", message.text);
+
+  });
+  socket.on("parse-user", (message) => {
+    console.log("received a message to parse-user", message);
+    socket.data = { user_id: message.user_id };
   });
 });
+
+async function getSocketByUserId(user_id) {
+  const sockets = await io.fetchSockets();
+
+  return sockets.filter((socket) => (socket.data.user_id === user_id))[0];
+}
