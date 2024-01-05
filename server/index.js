@@ -87,5 +87,3 @@ async function getSocketByUserId(user_id) {
 function checkIsChattingWith(my_user_id, socket) {
   return socket.data.user_chatting_with?._id === my_user_id;
 }
-
-module.exports = app;
